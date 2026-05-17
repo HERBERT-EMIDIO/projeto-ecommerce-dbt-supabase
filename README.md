@@ -8,13 +8,19 @@ Este repositório contém a infraestrutura e as transformações de dados para u
 - **Transformação de Dados:** [dbt (data build tool)](https://www.getdbt.com/) executado localmente.
 - **Linguagem:** SQL (para modelos) e Python (para gerenciamento do ambiente).
 
-## 📁 Estrutura do Projeto
+## 📁 Estrutura do Projeto e Arquitetura Medalhão
 
-- `/EcommerceAoVivo`: Contém o projeto dbt em si (modelos, testes, macros).
-- `dbt_setup_guide.md`: Guia de configuração e comandos úteis do dbt.
-- `git_setup_guide.md`: Guia para versionamento e envio para o GitHub.
-- `architecture.md`: Documentação técnica da arquitetura de dados (se aplicável).
+O projeto dbt (`/EcommerceAoVivo`) segue a **Arquitetura Medalhão** para organizar a maturidade e a qualidade dos dados. As configurações avançadas estão definidas no arquivo `dbt_project.yml`, o que inclui a criação de schemas específicos por camada, definição de variáveis globais e uso de tags:
 
+- **Camada Bronze (`models/bronze/`)**: Dados brutos originados da fonte (`raw`). O dbt está configurado para materializar essas tabelas como **Views** diretamente no schema `bronze` do Supabase, o que garante acesso aos dados no estado original sem duplicação de armazenamento.
+- **Camada Silver (`models/silver/`)**: Dados limpos e padronizados. Materializados no schema `silver`. É nesta camada que realizamos tratamentos de tipos (como arredondamento financeiro para 2 casas decimais) e enriquecimentos de negócio (como a coluna de `classificacao_preco` via CASE WHEN).
+- **Camada Gold (`models/gold/`)**: KPIs e tabelas prontas para consumo de BI (Data Marts). O dbt está configurado para separar os schemas por área de negócio, por exemplo: `gold_sales`, `gold_cs`, e `gold_pricing`.
+
+### 🗂️ Arquivos Adicionais
+- `EcommerceAoVivo/models/_sources.yml`: Mapeamento documentado de todas as fontes de dados brutas do banco de dados, incluindo a descrição individual de cada coluna.
+- `dbt_setup_guide.md`: Guia de configuração e comandos úteis do dbt no dia a dia.
+- `git_setup_guide.md`: Guia para versionamento e envio de código para o GitHub.
+- `explicacao_projeto.md`: Documentação técnica sobre o contexto do negócio e dados.
 ## 🛠️ Como executar localmente
 
 1. **Clone este repositório:**
