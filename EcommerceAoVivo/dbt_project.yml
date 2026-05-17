@@ -1,16 +1,11 @@
-
-# Name your project! Project names should contain only lowercase characters
-# and underscores. A good package name should reflect your organization's
-# name or the intended use of these models
 name: 'EcommerceAoVivo'
 version: '1.0.0'
+config-version: 2
 
-# This setting configures which "profile" dbt uses for this project.
+# Deve bater com o nome no profiles.yml
 profile: 'EcommerceAoVivo'
 
-# These configurations specify where dbt should look for different types of files.
-# The `model-paths` config, for example, states that models in this project can be
-# found in the "models/" directory. You probably won't need to change these!
+# Pastas do projeto
 model-paths: ["models"]
 analysis-paths: ["analyses"]
 test-paths: ["tests"]
@@ -18,19 +13,41 @@ seed-paths: ["seeds"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
 
-clean-targets:         # directories to be removed by `dbt clean`
+target-path: "target"
+clean-targets:
   - "target"
   - "dbt_packages"
 
-
-# Configuring models
-# Full documentation: https://docs.getdbt.com/docs/configuring-models
-
-# In this example config, we tell dbt to build all models in the example/
-# directory as views. These settings can be overridden in the individual model
-# files using the `{{ config(...) }}` macro.
+# Configuracoes de modelos por camada
 models:
-  EcommerceAoVivo:
-    # Config indicated by + and applies to all files under models/example/
-    example:
-      +materialized: view
+  EcommerceAoVivo:                    # Deve bater com o name do projeto
+    bronze:
+      +materialized: view             # Views - sempre atualizadas, sem custo de storage
+      +schema: bronze                 # Schema: bronze no banco de dados
+      +tags: ["bronze", "raw"]
+      +meta:
+        modeling_layer: bronze
+
+    silver:
+      +materialized: view            # Tables - colunas calculadas persistidas
+      +schema: silver                 # Schema: silver no banco de dados
+      +tags: ["silver", "cleaned"]
+      +meta:
+        modeling_layer: silver
+
+    gold:
+      +materialized: view            # Tables - KPIs prontos para consumo
+      +tags: ["gold", "kpi", "metrics"]
+      +meta:
+        modeling_layer: gold
+      sales:
+        +schema: gold_sales           # Schema: gold_sales
+      customer_success:
+        +schema: gold_cs              # Schema: gold_cs
+      pricing:
+        +schema: gold_pricing         # Schema: gold_pricing
+
+# Variaveis do projeto
+vars:
+  segmentacao_vip_threshold: 10000    # Receita minima para cliente VIP
+  segmentacao_top_tier_threshold: 5000 # Receita minima para TOP_TIER
