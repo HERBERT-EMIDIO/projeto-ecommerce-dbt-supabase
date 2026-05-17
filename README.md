@@ -57,3 +57,10 @@ dbt docs generate
 dbt docs serve
 ```
 Isso abrirá uma interface web local com toda a documentação da linhagem dos dados.
+
+### 🖼️ Visualização da Linhagem (Lineage Graph)
+Abaixo, exemplos da documentação e do gráfico de linhagem (Lineage Graph) gerados automaticamente pelo dbt mostrando o fluxo dos dados desde a origem (Raw) até a camada de negócios (Gold):
+
+![Lineage Graph do Projeto](img/lineage_graph.png)
+
+![Interface do dbt docs](img/dbt_docs.png)
