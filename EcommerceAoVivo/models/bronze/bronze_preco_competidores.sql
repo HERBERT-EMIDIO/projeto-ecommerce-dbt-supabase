@@ -1,1 +1,1 @@
-select * from {{ source('ecommerce', 'preco_competidores') }}
+select * from {{ source('raw', 'preco_competidores') }}

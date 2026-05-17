@@ -1,1 +1,1 @@
-select * from {{ source('ecommerce', 'clientes') }}
+select * from {{ source('raw', 'clientes') }}
