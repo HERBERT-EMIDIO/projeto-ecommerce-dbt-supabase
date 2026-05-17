@@ -29,14 +29,14 @@ models:
         modeling_layer: bronze
 
     silver:
-      +materialized: view            # Tables - colunas calculadas persistidas
+      +materialized: table            # Tables - colunas calculadas persistidas
       +schema: silver                 # Schema: silver no banco de dados
       +tags: ["silver", "cleaned"]
       +meta:
         modeling_layer: silver
 
     gold:
-      +materialized: view            # Tables - KPIs prontos para consumo
+      +materialized: table            # Tables - KPIs prontos para consumo
       +tags: ["gold", "kpi", "metrics"]
       +meta:
         modeling_layer: gold

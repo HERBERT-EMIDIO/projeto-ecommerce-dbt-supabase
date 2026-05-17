@@ -1,0 +1,90 @@
+version: 2
+
+models:
+  - name: bronze_clientes
+    description: "Tabela de clientes na camada Bronze (View), extração direta sem transformações."
+  - name: bronze_produtos
+    description: "Tabela de produtos na camada Bronze (View), extração direta sem transformações."
+  - name: bronze_vendas
+    description: "Tabela de vendas na camada Bronze (View), extração direta sem transformações."
+  - name: bronze_preco_competidores
+    description: "Tabela de preços de concorrentes na camada Bronze (View), extração direta sem transformações."
+
+  - name: silver_clientes
+    description: "Tabela de clientes na camada Silver (Table), contendo os dados limpos."
+    columns:
+      - name: id_cliente
+        description: "Chave primária do cliente."
+        tests:
+          - unique
+          - not_null
+
+  - name: silver_produtos
+    description: "Tabela de produtos na camada Silver (Table), enriquecida com a faixa de preço."
+    columns:
+      - name: id_produto
+        description: "Chave primária do produto."
+        tests:
+          - unique
+          - not_null
+      - name: faixa_preco
+        description: "Classificação do preço atual do produto (BASICO, MEDIO, PREMIUM)."
+        tests:
+          - accepted_values:
+              values: ['BASICO', 'MEDIO', 'PREMIUM']
+
+  - name: silver_vendas
+    description: "Tabela de vendas na camada Silver (Table), enriquecida com receita total, classificação de preço e partes de data."
+    columns:
+      - name: id_venda
+        description: "Chave primária da venda."
+        tests:
+          - unique
+          - not_null
+      - name: id_cliente
+        description: "Chave estrangeira referenciando o cliente."
+        tests:
+          - not_null
+      - name: id_produto
+        description: "Chave estrangeira referenciando o produto."
+        tests:
+          - not_null
+
+  - name: silver_preco_competidores
+    description: "Tabela de preços de competidores na camada Silver (Table), contendo a data da coleta convertida para data (Date)."
+    columns:
+      - name: id_produto
+        description: "Chave estrangeira referenciando o produto avaliado."
+        tests:
+          - not_null
+
+  - name: clientes_segmentacao
+    description: "Data Mart de Customer Success na camada Gold (Table): Segmentação de clientes com base em receita acumulada e frequência de compras."
+    columns:
+      - name: cliente_id
+        description: "Identificador único do cliente."
+        tests:
+          - unique
+          - not_null
+      - name: segmento_cliente
+        description: "Segmento de receita do cliente baseado nos limites configurados (REGULAR, TOP_TIER, VIP)."
+        tests:
+          - accepted_values:
+              values: ['REGULAR', 'TOP_TIER', 'VIP']
+
+  - name: precos_competitividade
+    description: "Data Mart de Pricing na camada Gold (Table): Análise comparativa de competitividade entre nossos preços e a concorrência."
+    columns:
+      - name: produto_id
+        description: "Identificador único do produto analisado."
+        tests:
+          - unique
+          - not_null
+      - name: classificacao_preco
+        description: "Classificação posicional do preço praticado frente ao mercado concorrente."
+        tests:
+          - accepted_values:
+              values: ['MAIS_CARO_QUE_TODOS', 'MAIS_BARATO_QUE_TODOS', 'ACIMA_DA_MEDIA', 'ABAIXO_DA_MEDIA', 'NA_MEDIA']
+
+  - name: vendas_temporais
+    description: "Data Mart de Vendas na camada Gold (Table): Visão consolidada de vendas, faturamento e métricas de ticket médio agregadas por dia da semana e hora do dia."
