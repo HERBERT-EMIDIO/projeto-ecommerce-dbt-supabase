@@ -1,0 +1,23 @@
+# Pastas do ambiente virtual Python
+.venv/
+venv/
+env/
+
+# Pastas geradas pelo dbt
+target/
+dbt_packages/
+logs/
+edr_target/
+
+# Arquivos do sistema (Windows/Mac)
+.DS_Store
+Thumbs.db
+
+# Arquivos de configurações do editor
+.vscode/
+.idea/
+
+# Qualquer arquivo temporário
+*.tmp
+*.bak
+*.swp
